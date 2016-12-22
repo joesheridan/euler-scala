@@ -1,6 +1,7 @@
+package collatz
+
 import akka.actor._
 import akka.routing._
-package com.me.collatz {
 
 case class GetCollatzLength(num:Int)
 case class Result(num:Int, startNumber:Int)
@@ -64,5 +65,4 @@ class CollatzActor extends Actor {
     }
     case _ => println("received unknown message:")
   }
-}
 }
