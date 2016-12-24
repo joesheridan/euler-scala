@@ -22,27 +22,48 @@ object NonAbundantSums extends App {
   val nonAbundantSums = getInverse(abundantSums, limit)
   println("non abundant sums:"+nonAbundantSums.sum)
   
+  /**
+   * get the divisors of param num
+   */
   def getDivisors(num:Int) : List[Int] = {
     (1 to num-1).filter(num % _ == 0).toList
   }
   
+  /**
+   * determine whether param num is abundant
+   */
   def isAbundant(num:Int) : Boolean = {
     val divisors = getDivisors(num).sum
     (divisors > num)
   }
   
+  /**
+   * get all the abundant numbers up to the limit param
+   */
   def getAbundantNumbers(limit:Int) : List[Int] = {
     (1 to limit).filter(isAbundant).toList
   }
   
+  /**
+   * for the given abundant number (num param),
+   * get all the possible sums against the other abundant numbers 
+   * within the known limit
+   */
   def getSums(num:Int, abundants:List[Int]): List[Int] = {
     abundants.map{_+num}.filter(_ <= 28123)
   }
   
+  /**
+   * from a list of sums of two abundant numbers,
+   * get the integers which are not listed (the inverse)
+   */
   def getInverse(nums:List[Int], limit:Int):List[Int] = {
     (1 to limit).filter { a => !nums.contains(a) }.toList
   }
   
+  /**
+   * get all the numbers which are sums of two abundant numbers
+   */
   def getAbundantSums(abundants:List[Int]): List[Int] = {
     // converting from list to array massively improves performance for this step
     var abundantsArr = abundants.toArray
