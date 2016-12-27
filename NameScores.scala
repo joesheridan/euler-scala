@@ -13,6 +13,9 @@ import scala.io.Source
 
 object NameScores extends App {
   
+  /**
+   * get the overall score for the given name param
+   */
   def getScore(name:String, index:Int) : Int = {    
     val score = name.map(getCharScore).sum * index
     println(name + " " +score)
