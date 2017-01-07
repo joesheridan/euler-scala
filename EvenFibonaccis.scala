@@ -6,7 +6,7 @@ object scala extends App {
   println("Even Fibonaccis")
 
 	// initialise list with 1 and 2
-	var mylist = List(1,2);
+	var fiblist = List(1,2);
 
 	def getNextFib(l: List[Int]):Int = {
 		val x = l.size
@@ -14,14 +14,13 @@ object scala extends App {
 	}
 
 	// generate list of fibonaccis with values < 4 million
-	while (getNextFib(mylist) <= 4000000) {
-		val f = getNextFib(mylist)
-		mylist = mylist :+ f
+	while (getNextFib(fiblist) <= 4000000) {
+		fiblist = fiblist :+ getNextFib(fiblist)
 	}
 
-	println("all fibs < 4M" + mylist)
+	println("all fibs < 4M" + fiblist)
 
-	// add them up
-	println("result:" + mylist.filter(_ % 2 == 0).sum)
+	// filter for even numbers and add them up 
+	println("result:" + fiblist.filter(_ % 2 == 0).sum)
 
 }

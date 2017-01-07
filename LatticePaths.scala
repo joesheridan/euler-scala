@@ -1,14 +1,10 @@
 package lattice
 
-import akka.actor._
-import akka.routing._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent._
 import akka.util.Timeout
 import scala.util.{Success, Failure}
-
-
   
   /**
    * Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, 
@@ -28,6 +24,10 @@ import scala.util.{Success, Failure}
       return getPathsNumRecursive(x, y + 1, limit) + getPathsNumRecursive(x + 1, y, limit)
     }
       
+    /**
+     * for a given range (params start and finish), calculate the number of valid
+     * paths through the lattice
+     */
     def getPathsNum(start:Long, finish:Long, gridSize:Int) : Long = {
       println("getpathsnum called- start:"+ start + " end:"+ finish)
       def isValidPath(path: Long, gridSize: Int) : Boolean = {
@@ -36,41 +36,50 @@ import scala.util.{Success, Failure}
         (java.lang.Long.bitCount(path) == gridSize)
       }
       
+      // count the valid paths
       var validPaths:Long = 0
-      var i = start // use long because large grids overflow maximum Int size
-      while (i < finish) {
-        if (isValidPath(i, gridSize)) {
-          validPaths += 1
-        }
-        i += 1
+      for (i <- (start to finish)) {
+        if (isValidPath(i, gridSize))
+        validPaths += 1
       }
-      return validPaths
+      validPaths
     }
     
+    /**
+     * get the max possible value of a path for a given gridSize
+     */
     def getMaxPath(gridSize: Int) : Long = {
       // create a string of 1's
       val maxbin = "1" * (gridSize * 2)
       return BigInt(maxbin,2).toLong // convert maxbin to a Long
     }
-     
-    // create some worker threads via futures
-    println("creating future workers")
-    val gridSize = 20
-    val numWorkers = 6
     
-    var futures: List[Future[Long]] = List()
-    for (i <- 0 until numWorkers) {
-      val chunkSize = getMaxPath(gridSize)/numWorkers
-      val start = chunkSize * i
-      var end = start + chunkSize
-      if (i == numWorkers-1) end = getMaxPath(gridSize)
-      val f = Future {
-        getPathsNum(start,end,gridSize)
+    /**
+     * set up the future worker list
+     */
+    def getFutureResultsList() : List[Future[Long]] = {
+      // create some worker threads via futures
+      println("creating future workers")
+      val gridSize = 15
+      val numWorkers = 6
+      var futures: List[Future[Long]] = List()
+    
+      // divide the work into chunks
+      for (i <- 0 until numWorkers) {
+        val chunkSize = getMaxPath(gridSize)/numWorkers
+        val start = chunkSize * i
+        var end = start + chunkSize
+        if (i == numWorkers-1) end = getMaxPath(gridSize)
+        val f = Future {
+          getPathsNum(start,end,gridSize)
+        }
+        futures = futures :+ f
       }
-      futures = futures ::: List(f)
+      futures
     }
-    val futureList = Future.sequence(futures)
-    futureList.onComplete {
+    
+    val resultsList = Future.sequence(getFutureResultsList())
+    resultsList.onComplete {
       case Success(results) => {
         println("results list:"+results)
         println("results:"+results.sum)
@@ -79,7 +88,7 @@ import scala.util.{Success, Failure}
     }
     
     // keep the main app alive until the results come back
-    while(!futureList.isCompleted) { 
+    while(!resultsList.isCompleted) { 
        Thread.sleep(100) 
     }
   }

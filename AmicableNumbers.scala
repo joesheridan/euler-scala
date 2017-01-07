@@ -7,22 +7,27 @@
  * The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
  * Evaluate the sum of all the amicable numbers under 10000.
  */
+
 object AmicableNumbers extends App {
+  
+  /**
+   * Get sum of list of divisors of param n
+   */
   def d(n:Int):Int = {
     (1 to n-1).filter(n % _ == 0).sum
   }
+  
+  /**
+   * return a list of amicable pair numbers less than param max
+   */
   def getAmicablePairs(max:Int) : List[Int] = {
-    var alist:List[Int] = List()
-    for (i <- 1 to max) {
-      if (i == d(d(i)) && d(i) != d(d(i))) {
-        alist = alist ::: List(d(i), d(d(i)))
-      }
-    }
-    alist
+    val pairs = for (i <- 1 to max if (i == d(d(i)) && d(i) != d(d(i)))) 
+                    yield List(d(i), d(d(i)))
+    println(pairs.toList.flatten)
+    pairs.toList.flatten
   }
   
   val amicables = getAmicablePairs(10000);
-  amicables.distinct.foreach(println)
   println("sum of amicable pairs:"+amicables.distinct.sum)
   
 }

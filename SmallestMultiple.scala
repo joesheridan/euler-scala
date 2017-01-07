@@ -12,7 +12,6 @@ object SmallestMultiple extends App {
   	}
 	  println("found:" + i)
 	}
-	main()
 
 	// test the input number to see if its divisible by the divider
 	def testMultiple(input: Int, divider: Int): Boolean = {

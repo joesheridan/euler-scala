@@ -28,36 +28,47 @@ object LargestProductInGrid extends App {
    Array(1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52,1, 89, 19, 67, 48)
    )
   
+   /**
+    * get the sum of all horizontal 4 digit sequences
+    */
    def getHorizontalProducts(grid: Array[Array[Int]]): Int = {
-    var results = List[Int]()
-    for(i <- 0 until grid.length-4; j <- 0 until grid.length) {
-      results ::= (grid(j)(i) * grid(j)(i+1) * grid(j)(i+2) * grid(j)(i+3))
-    }
-    return results.max
+    
+    val results = for (i <- 0 until grid.length-4; j <- 0 until grid.length)
+                  yield (grid(j)(i) * grid(j)(i+1) * grid(j)(i+2) * grid(j)(i+3))
+    
+    results.max
   }
   
+   /**
+    * get the sum of all vertical 4 digit sequences
+    */
   def getVerticalProducts(grid: Array[Array[Int]]): Int = {
-    var results = List[Int]()
-    for(i <- 0 until grid.length; j <- 0 until grid.length-4) {
-      results ::= (grid(j)(i) * grid(j+1)(i) * grid(j+2)(i) * grid(j+3)(i))
-    }
-    return results.max
+    
+    val results = for (i <- 0 until grid.length; j <- 0 until grid.length-4)
+      yield (grid(j)(i) * grid(j+1)(i) * grid(j+2)(i) * grid(j+3)(i))
+    
+    results.max
   }
     
+   /**
+    * get the sum of all diagonally left and right 4 digit sequences
+    */
   def getDiagProducts(grid: Array[Array[Int]]): Int = {
-    var results = List[Int]()
+
     // get products diagonally down and to the right
-    for(i <- 0 until grid.length-4; j <- 0 until grid.length-4) {
-      results ::= (grid(j)(i) * grid(j+1)(i+1) * grid(j+2)(i+2) * grid(j+3)(i+3))
-    }
+    val resultsRight = for (i <- 0 until grid.length-4; j <- 0 until grid.length-4) 
+      yield (grid(j)(i) * grid(j+1)(i+1) * grid(j+2)(i+2) * grid(j+3)(i+3))
     
     // get products diagonally down and to the left
-    for(i <- 3 until grid.length; j <- 0 until grid.length-4) {
-      results ::= (grid(j)(i) * grid(j+1)(i-1) * grid(j+2)(i-2) * grid(j+3)(i-3))
-    }
-    return results.max
+    val resultsLeft = for (i <- 3 until grid.length; j <- 0 until grid.length-4)
+      yield (grid(j)(i) * grid(j+1)(i-1) * grid(j+2)(i-2) * grid(j+3)(i-3))
+    
+    Math.max(resultsRight.max, resultsLeft.max)
   }
-   println(List(getHorizontalProducts(grid).toString, getVerticalProducts(grid).toString,
+  
+  // now calculate and print the maximum value from all the above results
+  println(List(getHorizontalProducts(grid).toString, 
+               getVerticalProducts(grid).toString,
                getDiagProducts(grid).toString).max)
   
 }
