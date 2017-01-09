@@ -4,34 +4,29 @@
  *  find smallest int divisible by 1-20
  */
 object SmallestMultiple extends App {
-	// main function
-	def main() = {
-  	var i = 1;
-  	while (!findMultiples(i, 20)) {
-  	  i = i + 1;
-  	}
-	  println("found:" + i)
-	}
 
-	// test the input number to see if its divisible by the divider
+	var i = 1;
+	while (!findMultiples(i, 20)) {
+	  i = i + 1;
+	}
+  println("found:" + i)
+	
+
+	/**
+	 *  test the input number to see if its divisible by the divider
+	 */
 	def testMultiple(input: Int, divider: Int): Boolean = {
 		var res = (input % divider);
-		if (res == 0) {
-		  return true;
-		} else {
-		  return false;
-		}
+		(res == 0)
 	}
 
-	// test to see if num is divisible by all ints up to max
+	/**
+	 *  test to see if num is divisible by all ints up to max
+	 */
 	def findMultiples(num: Int, max: Int): Boolean = {
-  	for (i <- 1 to max) {
-  		if (!testMultiple(num, i)) {
-  		  return false
-  		}
-  	}
-  	return true
+	  // count the factors 
+  	val factors = (1 to max).filter(testMultiple(num, _))
+  	factors.length == max
 	}
 
-	
 }
