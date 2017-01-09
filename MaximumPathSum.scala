@@ -28,6 +28,7 @@
 	* However, Problem 67, is the same challenge with a triangle containing one-hundred rows; 
 	* it cannot be solved by brute force, and requires a clever method! ;o)
  */
+
 object MaximumPathSum extends App {
   val triangle = Array(
     Array(75),
@@ -54,12 +55,11 @@ object MaximumPathSum extends App {
    */
   def getPathVal(path:List[Int], triangle: Array[Array[Int]]):Int = {
     var total = 0
-    for (i <- 0 until path.length) {
-      // sum the 1s up to i to get the distance right
-      val right = path.slice(0, i).sum
-      total += triangle(i)(right)
-    }
-    total
+    val pathvals = for {  i <- 0 until path.length
+                          val rightCol = path.slice(0, i).sum
+                  } yield (triangle(i)(rightCol))
+    
+    pathvals.sum
   }
   
   /**

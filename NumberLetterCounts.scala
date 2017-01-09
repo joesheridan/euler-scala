@@ -4,10 +4,16 @@
  * 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
  * If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, 
  * how many letters would be used?
- * NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters. 
+ * NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 
+ * 23 letters and 115 (one hundred and fifteen) contains 20 letters. 
  * The use of "and" when writing out numbers is in compliance with British usage.
  */
 object NumberLetterCounts extends App {
+  
+  /**
+   * Count the letters in a written number by separately calculating and adding the
+   * thousands, then hundreds, then the tens and units
+   */
   def countNumberLetters(num:Int):String = {
     getThousands(num) + getHundreds(num) + getTensPlusUnits(num)
   }
@@ -23,6 +29,9 @@ object NumberLetterCounts extends App {
     return ""
   }
   
+  /**
+   * return the written number string for unit values (0-9)
+   */
   def getUnits(units:Int): String = {
     val u = units % 10
     u match {
@@ -39,6 +48,9 @@ object NumberLetterCounts extends App {
     }
   }
     
+  /**
+   * return the written number string for teen values (10-19)
+   */
   def getTeens(num:Int):String = {
     val t = num % 100
     t match {
@@ -54,6 +66,10 @@ object NumberLetterCounts extends App {
       case 19 => return "nineteen"
     }
   }
+  
+  /**
+   * return the written number string for numbers less than 100
+   */
   def getTensPlusUnits(num:Int): String = {
     val t = (num / 10) % 10
     t match {
@@ -70,6 +86,9 @@ object NumberLetterCounts extends App {
     }
   }
   
+  /**
+   * return the written number string for the hundreds
+   */
   def getHundreds(num:Int):String = {
     val h = (num/100) % 10
     var and = "and"
@@ -77,14 +96,11 @@ object NumberLetterCounts extends App {
       and = ""
     }
     if (h == 0) return ""
-    return getUnits(h) + "hundred" + and
-    
+    getUnits(h) + "hundred" + and
   }
   
-  var total = 0;
-  for (i <- 1 to 1000) {
-    total += countNumberLetters(i).length
-    println(countNumberLetters(i))
-  }
-  println("total:"+total)
+  // count the letters in the first 1000 written numbers
+  val letterCounts = for (i <- 1 to 1000) yield (countNumberLetters(i).length)
+  
+  println("total:"+letterCounts.sum)
 }
