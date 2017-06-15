@@ -2,7 +2,7 @@
 /**
  * calculate the sum of all fibonacci numbers under 4M which are even
  */
-object scala extends App {
+object fibonnaccis extends App {
   println("Even Fibonaccis")
 
 	// initialise list with 1 and 2
