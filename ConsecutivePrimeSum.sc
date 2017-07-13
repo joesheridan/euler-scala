@@ -10,14 +10,23 @@ Which prime, below one-million, can be written as the sum of the most consecutiv
  */
 
 def isPrime(num: Int) : Boolean = {
-  val range = 2 to (num-1)
+  if (num < 2)
+    return false
+  val range = (2 to (num / 2)).view
   return !range.exists(i => (num % i) == 0) && num > 1
 }
+val max = 1000000
+val primes = (2 to max).view.filter(isPrime(_)).take(1000).force
 
-val primes = (2 to 1000).filter(isPrime(_))
 
-def getConsecutivePrimeSum(primes: List[Int], a:Int): Int = {
-    primes(a) + primes(a+1)
+def getConsecutivePrimeSums(primes: Seq[Int], start:Int, max: Int): Seq[(Int, Int, Int)] = {
+
+  primes.drop(start).scanLeft(0)(_ + _).drop(1).zipWithIndex.collect {
+    case (x, ind) if x <= max && ind > 0 && isPrime(x)  => (primes(start), x, ind + 1)
+  }
 }
 
-primes.zipWithIndex.map { case (a, index) => a -> getConsecutivePrimeSum(primes, index) }
+val results = primes.zipWithIndex.map {
+  case(p, i) => getConsecutivePrimeSums(primes, i, max)
+}
+val mostConsecutive = results.flatten.maxBy(_._3)
